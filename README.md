@@ -1,8 +1,4 @@
-**Requirements:**
-
-**smbclient**
-
-**smbmap**
+**Requirements: smbclient smbmap** -- both included with Kali
 
 Created for the OSCP, this dumps all SMBShares on the target. Usage is simple...
 
