@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [[ -z $1 ]];
 then
     echo -n "Usage: sdas target [username] [password]"
@@ -13,6 +12,8 @@ else
     echo -e "\t${GREEN}---SMB -- DUMP ALL SHARES---${NC}"
     echo -e "\t${GREEN}----------------------------${NC}"
     echo -e -n "\n"
+    [[ -d "smb_dump" ]] || mkdir "smb_dump" 2> /dev/null
+    cd "smb_dump"
 fi
 
 if [[ -z $2 ]];
