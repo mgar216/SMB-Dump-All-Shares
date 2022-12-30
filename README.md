@@ -1,3 +1,9 @@
+**Requirements:**
+
+**smbclient**
+
+**smbmap**
+
 Created for the OSCP, this dumps all SMBShares on the target. Usage is simple...
 
 Make sure you **chmod +x sdas.sh**
