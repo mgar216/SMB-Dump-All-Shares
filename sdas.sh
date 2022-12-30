@@ -24,7 +24,6 @@ then
 else
     username="$2"
     echo -e "${GREEN}[*]${NC} Using Username: ${GREEN}$username${NC}"
-    echo -e -n "\n"
     smbmap_cmd="$smbmap_cmd -u $2"
 fi
 
@@ -35,10 +34,10 @@ then
 else
     password="$3"
     echo -e "${GREEN}[*]${NC} Using Password: ${GREEN}$password${NC}"
-    echo -e -n "\n"
     smbmap_cmd="$smbmap_cmd -p $3"
 fi
 
+echo -e -n "\n"
 
 all_shares=$(smbclient -L //"$1" -U="$username" --password="$password" 2> /dev/null | awk '{ print $1 }' | tail -n+4 | head -n+2)
 
