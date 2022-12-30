@@ -42,7 +42,7 @@ for i in $all_shares; do
     [[ -d "$i" ]] || mkdir "$i" 2> /dev/null
     cd "$i"
     echo -e "${GREEN}[+]${NC} Dumping Share: ${GREEN}$i${NC}"
-    status=$(smbclient //$(chost)/"$i" -U="" --password="" -c "prompt off; recurse on; mget *")
+    status=$(smbclient //"$1"/"$i" -U="" --password="" -c "prompt off; recurse on; mget *")
     cd ../
     if [ "$status" == "NT_STATUS_NO_SUCH_FILE listing \*" ]
     then
