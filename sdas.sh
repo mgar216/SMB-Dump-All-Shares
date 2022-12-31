@@ -40,7 +40,7 @@ fi
 
 if [[ -z $4  ]];
 then
-    timeout="15"
+    timeout="240"
 else
     timeout="$4"
     echo -e "${GREEN}[*]${NC} Timeout Set to: ${GREEN}$timeout${NC} Seconds."
@@ -82,20 +82,20 @@ for i in $all_shares; do
     find $(pwd)/"$i" -maxdepth 0 -empty -exec rm -rf {} \;
     if [ "$status" == "NT_STATUS_NO_SUCH_FILE listing \*" ]
     then
-        echo -e "${RED}[-]${NC} Could not connect to ${RED}$i${NC} or Share was empty."
+        echo -e "${RED}[-]${NC} Could Not Connect To ${RED}$i${NC} or Share Was Empty."
         echo -e -n "\n"
     elif [[ -d "$status" ]]
     then
-        echo "${RED}[-]${NC} An Error Occurred when Accessing the Share."
+        echo "${RED}[-]${NC} An Error Occurred When Accessing the Share."
         echo -e -n "\n"
     elif [[ $status =~ "NT_STATUS_CONNECTION_DISCONNECTED opening remote file" ]]
     then
-        echo -e "${YELLOW}[*]${NC} Timeout Error while Retrieving Files."
+        echo -e "${YELLOW}[*]${NC} Timeout Error While Retrieving Files."
         echo -e -n "\n"
     elif [[ $status =~ "NT_STATUS_INVALID_NETWORK_RESPONSE opening remote file" ]]
     then
-        echo -e "${YELLOW}[*]${NC} Timeout Error while Retrieving Files from ${YELLOW}$i${NC}"
-	echo -e "\t${YELLOW}Increasing the Timeout may fix this issue.${NC}"
+        echo -e "${YELLOW}[*]${NC} Timeout Error While Retrieving Files From ${YELLOW}$i${NC}"
+	echo -e "\t${YELLOW}Increasing the Timeout May Fix This Issue.${NC}"
         echo -e -n "\n"
     elif [[ $status == "tree connect failed: NT_STATUS_ACCESS_DENIED" ]]
     then
