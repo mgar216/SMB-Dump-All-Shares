@@ -70,7 +70,6 @@ for i in $all_shares; do
     status=$(smbclient //"$1"/"$i" -U="$username" --password="$password" -c "prompt off; recurse on; mget *")
     cd ../
     find $(pwd)/"$i" -maxdepth 0 -empty -exec rm -rf {} \;
-    echo -e "DEBUG: $status"
     if [ "$status" == "NT_STATUS_NO_SUCH_FILE listing \*" ]
     then
         echo -e "${RED}[-]${NC} Could not connect to ${RED}$i${NC} or Share was empty."
