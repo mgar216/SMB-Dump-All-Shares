@@ -77,7 +77,21 @@ for i in $all_shares; do
     elif [[ -d "$status" ]]
     then
         echo "${RED}[-]${NC} An Error Occurred when Accessing the Share."
+        echo -e -n "\n"
+    elif [[ $status =~ "NT_STATUS_IO_TIMEOUT" ]]
+    then
+        echo -e "${RED}[-]${NC} Timeout Error while Retrieving Files."
+        echo -e -n "\n"
+    elif [[ $status =~ "NT_STATUS_ACCESS_DENIED" ]]
+    then
+        echo -e "${RED}[-]${NC} READ ACCESS is Denied for ${RED}$i${NC}"
+        echo -e -n "\n"
+    elif [[ $status == "" ]]
+    then
+        echo -e "${RED}[-]${NC} Unknown Error when Accessing ${RED}$i${NC}"
+        echo -e -n "\n"
     else
+        echo "Debug: $status."
         echo -e -n "\n"
     fi
 done
