@@ -69,20 +69,25 @@ for i in $all_shares; do
     echo -e "${GREEN}[+]${NC} Dumping Share: ${GREEN}$i${NC}"
     status=$(smbclient //"$1"/"$i" -U="$username" --password="$password" -c "prompt off; recurse on; mget *")
     cd ../
+    find $(pwd)/"$i" -maxdepth 0 -empty -exec rm -rf {} \;
+    echo -e "DEBUG: $status"
     if [ "$status" == "NT_STATUS_NO_SUCH_FILE listing \*" ]
     then
-        rm -rf "$i"
         echo -e "${RED}[-]${NC} Could not connect to ${RED}$i${NC} or Share was empty."
         echo -e -n "\n"
     elif [[ -d "$status" ]]
     then
         echo "${RED}[-]${NC} An Error Occurred when Accessing the Share."
         echo -e -n "\n"
-    elif [[ $status =~ "NT_STATUS_IO_TIMEOUT" ]]
+    elif [[ $status =~ "NT_STATUS_CONNECTION_DISCONNECTED opening remote file" ]]
     then
         echo -e "${RED}[-]${NC} Timeout Error while Retrieving Files."
         echo -e -n "\n"
-    elif [[ $status =~ "NT_STATUS_ACCESS_DENIED" ]]
+    elif [[ $status =~ "NT_STATUS_INVALID_NETWORK_RESPONSE opening remote file" ]]
+    then
+        echo -e "${RED}[-]${NC} Timeout Error while Retrieving Files."
+        echo -e -n "\n"
+    elif [[ $status == "tree connect failed: NT_STATUS_ACCESS_DENIED" ]]
     then
         echo -e "${RED}[-]${NC} READ ACCESS is Denied for ${RED}$i${NC}"
         echo -e -n "\n"
@@ -91,8 +96,8 @@ for i in $all_shares; do
         echo -e "${RED}[-]${NC} Unknown Error when Accessing ${RED}$i${NC}"
         echo -e -n "\n"
     else
-        echo "Debug: $status."
         echo -e -n "\n"
     fi
 done
+
 IFS=$OLDIFS
