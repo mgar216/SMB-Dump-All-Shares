@@ -39,33 +39,46 @@ fi
 
 echo -e -n "\n"
 
-all_shares=$(smbclient -L //"$1" -U="$username" --password="$password" -g -q | grep -oP '\|.*\|' | tr -d '|')
+all_shares=$(smbclient -L //"$1" -U="$username" --password="$password" -g -d 0 | grep -oP '\|.*\|' | tr -d '|')
+
+OLDIFS=$IFS
+IFS=$'\n'
 
 echo -e "${GREEN}[+]${NC} Found the following Shares:"
 for i in $all_shares; do
     echo -e "\t//$1/${GREEN}$i${NC}"
 done
+
+IFS=$OLDIFS
+
 echo -e -n "\n"
 echo -e "${GREEN}[+]${NC} Checking READ/WRITE Permissions:"
-smbmap=$(smbmap $smbmap_cmd | tail -n+2)
-echo -e "${GREEN}$smbmap${NC}"
+smbmap_results=$(smbmap $smbmap_cmd | tail -n+2)
+echo -e "${GREEN}$smbmap_results${NC}"
 echo -e -n "\n"
 
 echo -e "${GREEN}[*]${NC} Dumping all available Shares for: ${GREEN}$1${NC}"
 echo -e -n "\n"
 
+OLDIFS=$IFS
+IFS=$'\n'
+
 for i in $all_shares; do
     [[ -d "$i" ]] || mkdir "$i" 2> /dev/null
     cd "$i"
     echo -e "${GREEN}[+]${NC} Dumping Share: ${GREEN}$i${NC}"
-    status=$(smbclient //"$1"/"$i" -U="" --password="" -c "prompt off; recurse on; mget *")
+    status=$(smbclient //"$1"/"$i" -U="$username" --password="$password" -c "prompt off; recurse on; mget *")
     cd ../
     if [ "$status" == "NT_STATUS_NO_SUCH_FILE listing \*" ]
     then
         rm -rf "$i"
         echo -e "${RED}[-]${NC} Could not connect to ${RED}$i${NC} or Share was empty."
         echo -e -n "\n"
+    elif [[ -d "$status" ]]
+    then
+        echo "${RED}[-]${NC} An Error Occurred when Accessing the Share."
     else
         echo -e -n "\n"
     fi
 done
+IFS=$OLDIFS
