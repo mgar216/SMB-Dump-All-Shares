@@ -5,6 +5,7 @@ then
     exit 1
 else
     RED='\033[0;31m'
+    YELLOW='\033[0;33m'
     GREEN='\033[0;32m'
     NC='\033[0m' # No Color
     echo -e -n "\n"
@@ -80,11 +81,11 @@ for i in $all_shares; do
         echo -e -n "\n"
     elif [[ $status =~ "NT_STATUS_CONNECTION_DISCONNECTED opening remote file" ]]
     then
-        echo -e "${RED}[-]${NC} Timeout Error while Retrieving Files."
+        echo -e "${YELLOW}[*]${NC} Timeout Error while Retrieving Files."
         echo -e -n "\n"
     elif [[ $status =~ "NT_STATUS_INVALID_NETWORK_RESPONSE opening remote file" ]]
     then
-        echo -e "${RED}[-]${NC} Timeout Error while Retrieving Files."
+        echo -e "${YELLOW}[*]${NC} Timeout Error while Retrieving Files."
         echo -e -n "\n"
     elif [[ $status == "tree connect failed: NT_STATUS_ACCESS_DENIED" ]]
     then
