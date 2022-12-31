@@ -38,6 +38,15 @@ else
     smbmap_cmd="$smbmap_cmd -p $3"
 fi
 
+if [[ -z $4  ]];
+then
+    timeout="15"
+else
+    timeout="$4"
+    echo -e "${GREEN}[*]${NC} Timeout Set to: ${GREEN}$timeout${NC} Seconds."
+fi
+
+
 echo -e -n "\n"
 
 all_shares=$(smbclient -L //"$1" -U="$username" --password="$password" -g -d 0 | grep -oP '\|.*\|' | tr -d '|')
@@ -68,7 +77,7 @@ for i in $all_shares; do
     [[ -d "$i" ]] || mkdir "$i" 2> /dev/null
     cd "$i"
     echo -e "${GREEN}[+]${NC} Dumping Share: ${GREEN}$i${NC}"
-    status=$(smbclient //"$1"/"$i" -U="$username" --password="$password" -c "prompt off; recurse on; mget *")
+    status=$(smbclient //"$1"/"$i" -U="$username" --password="$password" -c "prompt off; recurse on; mget *" -t "$timeout")
     cd ../
     find $(pwd)/"$i" -maxdepth 0 -empty -exec rm -rf {} \;
     if [ "$status" == "NT_STATUS_NO_SUCH_FILE listing \*" ]
@@ -85,7 +94,8 @@ for i in $all_shares; do
         echo -e -n "\n"
     elif [[ $status =~ "NT_STATUS_INVALID_NETWORK_RESPONSE opening remote file" ]]
     then
-        echo -e "${YELLOW}[*]${NC} Timeout Error while Retrieving Files."
+        echo -e "${YELLOW}[*]${NC} Timeout Error while Retrieving Files from ${YELLOW}$i${NC}"
+	echo -e "\t${YELLOW}Increasing the Timeout may fix this issue.${NC}"
         echo -e -n "\n"
     elif [[ $status == "tree connect failed: NT_STATUS_ACCESS_DENIED" ]]
     then
@@ -93,7 +103,7 @@ for i in $all_shares; do
         echo -e -n "\n"
     elif [[ $status == "" ]]
     then
-        echo -e "${RED}[-]${NC} Unknown Error when Accessing ${RED}$i${NC}"
+        echo -e "${YELLOW}[*]${NC} Unknown Error while Accessing ${YELLOW}$i${NC}"
         echo -e -n "\n"
     else
         echo -e -n "\n"
