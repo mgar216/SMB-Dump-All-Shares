@@ -39,7 +39,7 @@ fi
 
 echo -e -n "\n"
 
-all_shares=$(smbclient -L //"$1" -U="$username" --password="$password" 2> /dev/null | awk '{ print $1 }' | tail -n+4 | head -n+2)
+all_shares=$(smbclient -L //"$1" -U="$username" --password="$password" -g -q | grep -oP '\|.*\|' | tr -d '|')
 
 echo -e "${GREEN}[+]${NC} Found the following Shares:"
 for i in $all_shares; do
