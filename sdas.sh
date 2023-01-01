@@ -103,7 +103,7 @@ for i in $all_shares; do
         echo -e -n "\n"
     elif [[ $status == "" ]]
     then
-        echo -e "${YELLOW}[*]${NC} Unknown Error while Accessing ${YELLOW}$i${NC}"
+        echo -e "${YELLOW}[*]${NC} Arbitrary Response while Accessing ${YELLOW}$i${NC}"
         echo -e -n "\n"
     else
         echo -e -n "\n"
